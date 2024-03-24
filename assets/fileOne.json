@@ -1,0 +1,46 @@
+{
+  "coord": {
+    "lon": 105.8412,
+    "lat": 21.0245
+  },
+  "weather": [
+    {
+      "id": 803,
+      "main": "Clouds",
+      "description": "mây cụm",
+      "icon": "04n"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 297.15,
+    "feels_like": 297.96,
+    "temp_min": 297.15,
+    "temp_max": 297.15,
+    "pressure": 1010,
+    "humidity": 90,
+    "sea_level": 1010,
+    "grnd_level": 1008
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 3.06,
+    "deg": 141,
+    "gust": 7.64
+  },
+  "clouds": {
+    "all": 83
+  },
+  "dt": 1711308143,
+  "sys": {
+    "type": 1,
+    "id": 9308,
+    "country": "VN",
+    "sunrise": 1711320965,
+    "sunset": 1711364937
+  },
+  "timezone": 25200,
+  "id": 1581130,
+  "name": "Hà Nội",
+  "cod": 200
+}
