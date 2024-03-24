@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>208938739384-ksehl7gbh4d3lcsfdflnp30g3dlthv04.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.208938739384-ksehl7gbh4d3lcsfdflnp30g3dlthv04</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>208938739384-77qvairhp8a7108lbqghmcjiqf24be3f.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDbjKzk6EKmaK0Gup_H84IcmmKNyU_p8kM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>208938739384</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.weartherproject.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>weatherproject-4cb43</string>
+	<key>STORAGE_BUCKET</key>
+	<string>weatherproject-4cb43.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:208938739384:ios:67dd01d59c6e5fa0f1764d</string>
+</dict>
+</plist>
