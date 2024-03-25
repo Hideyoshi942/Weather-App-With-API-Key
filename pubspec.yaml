@@ -45,13 +45,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.18.0
   google_sign_in: ^6.2.1
-  get: ^4.6.6
   font_awesome_flutter: ^10.1.0
   url_launcher: ^6.1.2
-  http: ^0.13.4
-  dio: ^4.0.4
-  syncfusion_flutter_charts: ^25.1.35
-  lottie: ^1.2.1
+  equatable: ^2.0.5
+  flutter_bloc: ^8.1.1
+  http: ^1.2.0
+  recase: ^4.1.0
+  flutter_dotenv: ^5.0.2
+  bloc: ^8.1.0
+  weather: ^3.1.1
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +85,7 @@ flutter:
     - assets/icons/
     - assets/
     - assets/anims/
+    - '.env'
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
