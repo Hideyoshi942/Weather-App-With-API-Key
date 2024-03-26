@@ -32,4 +32,13 @@ class FireStoreService{
       print("Có lỗi sửa đổi dữ liệu: $err");
     }
   }
+
+  Future<void> deleteData(String collection, String documentId) async{
+    try{
+      await FirebaseFirestore.instance.collection(collection).doc(documentId).delete();
+    }
+    catch(err){
+
+    }
+  }
 }

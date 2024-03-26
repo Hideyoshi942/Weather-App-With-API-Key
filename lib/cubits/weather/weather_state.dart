@@ -16,7 +16,6 @@ class WeatherState extends Equatable {
     required this.weather,
     required this.error,
   });
-
   factory WeatherState.initial() {
     return WeatherState(
       status: WeatherStatus.initial,

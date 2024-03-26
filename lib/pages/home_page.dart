@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recase/recase.dart';
 import 'package:weartherproject/cubits/weather/weather_cubit.dart';
 import 'package:weartherproject/pages/search_page.dart';
+import 'package:weartherproject/services/store.dart';
 import 'package:weartherproject/widgets/error_dialog.dart';
 import 'package:weartherproject/constants/constants.dart';
 import 'package:weartherproject/cubits/temp_settings/temp_settings_cubit.dart';
@@ -16,8 +18,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String? _city;
+  @override
+  void initState() {
+    _ispress = false;
+  }
 
+  bool _ispress = false;
+  String? _city;
+  FireStoreService _firestore = FireStoreService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,10 +38,17 @@ class _HomePageState extends State<HomePage> {
                 _city = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SearchPage()));
+                        builder: (context) => const SearchPage())); //....
 
                 print('city->$_city');
                 if (_city != null) {
+                  QuerySnapshot? query =  await _firestore.getData("LoveCity", "name", _city);
+                  if(query?.docs.length != 0){
+                    _ispress = true;
+                  }
+                  else{
+                    _ispress = false;
+                  }
                   context.read<WeatherCubit>().fetchWeather(_city!);
                 }
               },
@@ -44,7 +59,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return const SettingsPage();
+                  return const SettingsPage(); //...
                 }),
               );
             },
@@ -56,7 +71,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String showTemperature(double temperature) {
-    final tempUnit = context.watch<TempSettingsCubit>().state.tempUnit;
+    final tempUnit = context.watch<TempSettingsCubit>().state.tempUnit; // ....
 
     if (tempUnit == TempUnit.fahrenheit) {
       return ((temperature * 9 / 5) + 32).toStringAsFixed(2) + '℉';
@@ -65,10 +80,10 @@ class _HomePageState extends State<HomePage> {
     return temperature.toStringAsFixed(2) + '℃';
   }
 
-  Widget showIcon(String icon) {
+  Widget showIcon(String icon) { //......
     return FadeInImage.assetNetwork(
       placeholder: 'assets/loading.gif',
-      image: 'http://$kIconHost/img/wn/$icon@4x.png',
+      image: 'http://$kIconHost/img/wn/$icon@4x.png', //......
       width: 96,
       height: 96,
     );
@@ -92,11 +107,69 @@ class _HomePageState extends State<HomePage> {
       },
       builder: (context, state) {
         if (state.status == WeatherStatus.initial) {
-          return const Center(
-            child: Text(
-              'Chọn thành phố',
-              style: TextStyle(fontSize: 20.0),
-            ),
+          return Column(
+            children: [
+              SizedBox(height: 30,),
+              Text("Các thành phố yêu thích", style: TextStyle(fontSize: 20),),
+              SizedBox(height: 30,),
+              Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('LoveCity').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  print(snapshot.data?.docs.length);
+                  return Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
+                              physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var item = snapshot.data?.docs[index];
+                                return GestureDetector(
+                                  onTap: (){
+                                    context.read<WeatherCubit>().fetchWeather(item?["name"]!);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Color.fromRGBO(135, 206, 235, 0.5),
+                                        borderRadius: BorderRadius.circular(10)
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(item?["name"], style: TextStyle(fontSize: 20),),
+                                        ElevatedButton(
+                                            onPressed: (){
+                                              String? id = item?.id;
+                                              _firestore.deleteData("LoveCity", id!);
+                                            },
+                                            child: Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.red,
+                                              size: 30,
+                                            ))
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                  );
+                },
+              ),
+            )
+            ],
           );
         }
         if (state.status == WeatherStatus.loading) {
@@ -105,11 +178,69 @@ class _HomePageState extends State<HomePage> {
           );
         }
         if (state.status == WeatherStatus.error && state.weather.name == '') {
-          return const Center(
-            child: Text(
-              'Chọn thành phố',
-              style: TextStyle(fontSize: 20.0),
-            ),
+          return Column(
+            children: [
+              SizedBox(height: 30,),
+              Text("Các thành phố yêu thích", style: TextStyle(fontSize: 20),),
+              SizedBox(height: 30,),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('LoveCity').snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    print(snapshot.data?.docs.length);
+                    return Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
+                                physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
+                                itemCount: snapshot.data?.docs.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var item = snapshot.data?.docs[index];
+                                  return GestureDetector(
+                                    onTap: (){
+                                      context.read<WeatherCubit>().fetchWeather(item?["name"]!);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      margin: EdgeInsets.symmetric(vertical: 10),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromRGBO(135, 206, 235, 0.5),
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(item?["name"], style: TextStyle(fontSize: 20),),
+                                          ElevatedButton(
+                                              onPressed: (){
+                                                String? id = item?.id;
+                                                _firestore.deleteData("LoveCity", id!);
+                                              },
+                                              child: Icon(
+                                                Icons.delete_forever,
+                                                color: Colors.red,
+                                                size: 30,
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                    );
+                  },
+                ),
+              )
+            ],
           );
         }
         return ListView(
@@ -129,10 +260,39 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(
-                            Icons.favorite,
-                            color: Colors.white,
-                            size: 30,
+                          GestureDetector(
+                            onTap: () async{
+                              setState(() {
+                                _ispress = true;
+                              });
+                              QuerySnapshot? query = await _firestore.getData("LoveCity", "name", state.weather.name);
+                              if(query?.docs.length == 0){
+                                await _firestore.addData({"name" : state.weather.name}, "LoveCity");
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã thêm vào danh sách thành phố yêu thích")));
+                              }
+                              else{
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Thành phố đã có trong danh sách yêu thích")));
+                              }
+                            },
+                            onDoubleTap: () async{
+                              setState(() {
+                                _ispress = false;
+                              });
+                              QuerySnapshot? query = await _firestore.getData("LoveCity", "name", state.weather.name);
+                              if(query?.docs.length == 0){
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Không thể xóa tên thành phố vì không có trong danh sách yêu thích")));
+                              }
+                              else{
+                                String? id = query?.docs.first.id;
+                                _firestore.deleteData("LoveCity", id!);
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã xóa tên thành phố")));
+                              }
+                            },
+                            child: Icon(
+                              Icons.favorite,
+                              color: _ispress? Colors.red : Colors.white,
+                              size: 30,
+                            ),
                           ),
                         ],
                       ),
@@ -206,17 +366,68 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Các thành phố yêu thích"),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Dự báo trong ngày'),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text('Dự báo trong trong 5 ngày'),
-                ],
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('LoveCity').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  print(snapshot.data?.docs.length);
+                  return Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
+                            physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
+                            itemCount: snapshot.data?.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var item = snapshot.data?.docs[index];
+                              return GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    _ispress = true;
+                                  });
+                                  context.read<WeatherCubit>().fetchWeather(item?["name"]!);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                      color: Color.fromRGBO(135, 206, 235, 0.5),
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(item?["name"], style: TextStyle(fontSize: 20),),
+                                      ElevatedButton(
+                                          onPressed: (){
+                                            String? id = item?.id;
+                                            _firestore.deleteData("LoveCity", id!);
+                                          },
+                                          child: Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                            size: 30,
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  );
+                },
               ),
             ),
           ],

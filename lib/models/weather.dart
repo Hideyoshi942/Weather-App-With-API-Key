@@ -63,7 +63,14 @@ class Weather extends Equatable {
 
   @override
   String toString() {
-    return 'Weather(description: $description, icon: $icon, temp: $temp, tempMin: $tempMin, tempMax: $tempMax, name: $name, country: $country, lastUpdated: $lastUpdated)';
+    return 'Weather(description: $description, '
+        'icon: $icon, '
+        'temp: $temp, '
+        'tempMin: $tempMin, '
+        'tempMax: $tempMax, '
+        'name: $name, '
+        'country: $country, '
+        'lastUpdated: $lastUpdated)';
   }
 
   Weather copyWith({

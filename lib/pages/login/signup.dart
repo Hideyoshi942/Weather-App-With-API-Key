@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weartherproject/main.dart';
 import 'package:weartherproject/services/auth.dart';
 import 'package:weartherproject/services/store.dart';
 import 'package:weartherproject/pages/home_page.dart';
@@ -422,7 +423,7 @@ class _SignUpState extends State<SignUp> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => HomePage(),
+                                        builder: (context) => MyApp(),
                                       ),
                                     );
                                     Map<String, dynamic> data = {

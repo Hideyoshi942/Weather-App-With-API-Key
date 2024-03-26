@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:weartherproject/main.dart';
 import 'package:weartherproject/services/auth.dart';
 import 'package:weartherproject/services/store.dart';
 import 'package:weartherproject/pages/home_page.dart';
@@ -261,7 +262,7 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đăng nhập thành công")));
                                       Navigator.pushReplacement(
                                           context, MaterialPageRoute(
-                                        builder: (context) => HomePage(),));
+                                        builder: (context) => MyApp(),));
                                       _emailController.clear();
                                       _passwordController.clear();
                                     }
@@ -317,8 +318,11 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                         'account' : email,
                                         'password' : "",
                                       }, 'Account');
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
+
                                     }
+                                    Navigator.pushReplacement(
+                                        context, MaterialPageRoute(
+                                      builder: (context) => MyApp(),));
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.white, // Màu nền của nút

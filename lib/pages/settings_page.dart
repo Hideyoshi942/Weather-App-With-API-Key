@@ -54,7 +54,9 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () async {
                 await _auth.signOut();
                 _googleSignIn.signOut();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignIn(),));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignIn(),));
               },
             ),
           ),
