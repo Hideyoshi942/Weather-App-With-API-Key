@@ -11,13 +11,16 @@ import 'package:weartherproject/cubits/temp_settings/temp_settings_cubit.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  String _email;
+
+  HomePage(this._email);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  String idUser = "12345";
   @override
   void initState() {
     _ispress = false;
@@ -41,6 +44,9 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const SearchPage())); //....
 
                 print('city->$_city');
+
+                // QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
+                // query.docs.first.id;
                 if (_city != null) {
                   QuerySnapshot? query =  await _firestore.getData("LoveCity", "name", _city);
                   if(query?.docs.length != 0){
@@ -110,65 +116,74 @@ class _HomePageState extends State<HomePage> {
           return Column(
             children: [
               SizedBox(height: 30,),
-              Text("Các thành phố yêu thích", style: TextStyle(fontSize: 20),),
+              GestureDetector(
+                  onTap: () async {
+                    QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
+                    print("-----------------++++++++");
+                    idUser = query.docs.first.id;
+                    setState(() {
+                    });
+                  },
+                  child: Text("Thành phố yêu thích", style: TextStyle(fontSize: 20),)
+              ),
               SizedBox(height: 30,),
               Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('LoveCity').snapshots(),
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  print(snapshot.data?.docs.length);
-                  return Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
-                              physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
-                              itemCount: snapshot.data?.docs.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                var item = snapshot.data?.docs[index];
-                                return GestureDetector(
-                                  onTap: (){
-                                    context.read<WeatherCubit>().fetchWeather(item?["name"]!);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(10),
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    decoration: BoxDecoration(
-                                        color: Color.fromRGBO(135, 206, 235, 0.5),
-                                        borderRadius: BorderRadius.circular(10)
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('User').doc(idUser).collection("LoveCity").snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    print(snapshot.data?.docs.length);
+                    return Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
+                                physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
+                                itemCount: snapshot.data?.docs.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var item = snapshot.data?.docs[index];
+                                  return GestureDetector(
+                                    onTap: (){
+                                      context.read<WeatherCubit>().fetchWeather(item?["name"]!);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      margin: EdgeInsets.symmetric(vertical: 10),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromRGBO(135, 206, 235, 0.5),
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(item?["name"], style: TextStyle(fontSize: 20),),
+                                          ElevatedButton(
+                                              onPressed: (){
+                                                String? id = item?.id;
+                                                _firestore.deleteData("LoveCity", id!);
+                                              },
+                                              child: Icon(
+                                                Icons.delete_forever,
+                                                color: Colors.red,
+                                                size: 30,
+                                              ))
+                                        ],
+                                      ),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(item?["name"], style: TextStyle(fontSize: 20),),
-                                        ElevatedButton(
-                                            onPressed: (){
-                                              String? id = item?.id;
-                                              _firestore.deleteData("LoveCity", id!);
-                                            },
-                                            child: Icon(
-                                              Icons.delete_forever,
-                                              color: Colors.red,
-                                              size: 30,
-                                            ))
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                  );
-                },
-              ),
-            )
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                    );
+                  },
+                ),
+              )
             ],
           );
         }
@@ -181,12 +196,21 @@ class _HomePageState extends State<HomePage> {
           return Column(
             children: [
               SizedBox(height: 30,),
-              Text("Các thành phố yêu thích", style: TextStyle(fontSize: 20),),
+              GestureDetector(
+                  onTap: () async {
+                    QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
+                    print("-----------------++++++++");
+                    idUser = query.docs.first.id;
+                    setState(() {
+                    });
+                  },
+                  child: Text("Thành phố yêu thích", style: TextStyle(fontSize: 20),)
+              ),
               SizedBox(height: 30,),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection('LoveCity').snapshots(),
+                  stream: FirebaseFirestore.instance.collection('User').doc(idUser).collection("LoveCity").snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
@@ -265,27 +289,41 @@ class _HomePageState extends State<HomePage> {
                               setState(() {
                                 _ispress = true;
                               });
-                              QuerySnapshot? query = await _firestore.getData("LoveCity", "name", state.weather.name);
-                              if(query?.docs.length == 0){
-                                await _firestore.addData({"name" : state.weather.name}, "LoveCity");
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã thêm vào danh sách thành phố yêu thích")));
+                              QuerySnapshot? query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
+                              if(query.docs.isNotEmpty){
+                                String idUser = query.docs.first.id;
+                                QuerySnapshot? queryLoveCity = await FirebaseFirestore.instance.collection("User").doc(idUser).collection("LoveCity").where("name", isEqualTo: state.weather.name).get();
+                                if(queryLoveCity.docs.isEmpty){
+                                  await FirebaseFirestore.instance.collection("User").doc(idUser).collection("LoveCity").add({"name" : state.weather.name});
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã thêm vào danh sách thành phố yêu thích")));
+                                }
+                                else{
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Thành phố đã có trong danh sách yêu thích")));
+                                }
                               }
                               else{
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Thành phố đã có trong danh sách yêu thích")));
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Lỗi user")));
                               }
                             },
                             onDoubleTap: () async{
                               setState(() {
                                 _ispress = false;
                               });
-                              QuerySnapshot? query = await _firestore.getData("LoveCity", "name", state.weather.name);
-                              if(query?.docs.length == 0){
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Không thể xóa tên thành phố vì không có trong danh sách yêu thích")));
+                              QuerySnapshot? query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
+                              if(query.docs.isEmpty){
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Không có user với email: ${widget._email}")));
                               }
                               else{
-                                String? id = query?.docs.first.id;
-                                _firestore.deleteData("LoveCity", id!);
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã xóa tên thành phố")));
+                                String? idUser = query.docs.first.id;
+                                QuerySnapshot? queryLoveCity = await FirebaseFirestore.instance.collection("User").doc(idUser).collection("LoveCity").where("name", isEqualTo : state.weather.name).get();
+                                if(queryLoveCity.docs.isEmpty){
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Thành phố không có trong danh sách yêu thích")));
+                                }
+                                else{
+                                  String idLoveCity = queryLoveCity.docs.first.id;
+                                  await FirebaseFirestore.instance.collection("User").doc(idUser).collection("LoveCity").doc(idLoveCity).delete();
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã xóa tên thành phố")));
+                                }
                               }
                             },
                             child: Icon(
@@ -369,67 +407,74 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 10,
             ),
-            Text("Các thành phố yêu thích"),
+            GestureDetector(
+                onTap: () async {
+                  QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
+                  print("-----------------++++++++");
+                  idUser = query.docs.first.id;
+                  setState(() {
+                  });
+                },
+                child: Text("Thành phố yêu thích", style: TextStyle(fontSize: 20),)
+            ),
+            SizedBox(height: 30,),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('LoveCity').snapshots(),
+                stream: FirebaseFirestore.instance.collection('User').doc(idUser).collection("LoveCity").snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) {
                     return Center(child: CircularProgressIndicator());
                   }
                   print(snapshot.data?.docs.length);
                   return Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
-                            physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
-                            itemCount: snapshot.data?.docs.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              var item = snapshot.data?.docs[index];
-                              return GestureDetector(
-                                onTap: (){
-                                  setState(() {
-                                    _ispress = true;
-                                  });
-                                  context.read<WeatherCubit>().fetchWeather(item?["name"]!);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  margin: EdgeInsets.symmetric(vertical: 10),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(135, 206, 235, 0.5),
-                                      borderRadius: BorderRadius.circular(10)
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true, // Đảm bảo ListView không chiếm toàn bộ không gian
+                              physics: NeverScrollableScrollPhysics(), // Ngăn cuộn ListView
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var item = snapshot.data?.docs[index];
+                                return GestureDetector(
+                                  onTap: (){
+                                    context.read<WeatherCubit>().fetchWeather(item?["name"]!);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Color.fromRGBO(135, 206, 235, 0.5),
+                                        borderRadius: BorderRadius.circular(10)
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(item?["name"], style: TextStyle(fontSize: 20),),
+                                        ElevatedButton(
+                                            onPressed: (){
+                                              String? id = item?.id;
+                                              _firestore.deleteData("LoveCity", id!);
+                                            },
+                                            child: Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.red,
+                                              size: 30,
+                                            ))
+                                      ],
+                                    ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(item?["name"], style: TextStyle(fontSize: 20),),
-                                      ElevatedButton(
-                                          onPressed: (){
-                                            String? id = item?.id;
-                                            _firestore.deleteData("LoveCity", id!);
-                                          },
-                                          child: Icon(
-                                            Icons.delete_forever,
-                                            color: Colors.red,
-                                            size: 30,
-                                          ))
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    )
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      )
                   );
                 },
               ),
-            ),
+            )
           ],
         );
       },

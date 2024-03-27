@@ -30,7 +30,8 @@ Future<void> main() async {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return MyApp();
+          String? email = snapshot.data?.email;
+          return MyApp(email!);
         } else {
           return SignIn();
         }
@@ -41,7 +42,9 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  String _email;
+
+  MyApp(this._email);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +66,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const HomePage(),
+          home: HomePage(_email),
         ),
       ),
     );

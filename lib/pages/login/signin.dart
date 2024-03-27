@@ -262,7 +262,7 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đăng nhập thành công")));
                                       Navigator.pushReplacement(
                                           context, MaterialPageRoute(
-                                        builder: (context) => MyApp(),));
+                                        builder: (context) => MyApp(email.trim()),));
                                       _emailController.clear();
                                       _passwordController.clear();
                                     }
@@ -318,11 +318,10 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                         'account' : email,
                                         'password' : "",
                                       }, 'Account');
-
+                                      Navigator.pushReplacement(
+                                          context, MaterialPageRoute(
+                                        builder: (context) => MyApp(email!),));
                                     }
-                                    Navigator.pushReplacement(
-                                        context, MaterialPageRoute(
-                                      builder: (context) => MyApp(),));
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.white, // Màu nền của nút

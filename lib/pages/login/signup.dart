@@ -423,7 +423,7 @@ class _SignUpState extends State<SignUp> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => MyApp(),
+                                        builder: (context) => MyApp(email.trim()),
                                       ),
                                     );
                                     Map<String, dynamic> data = {
