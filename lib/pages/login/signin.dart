@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:weartherproject/main.dart';
+import 'package:weartherproject/pages/login/forgotpassword.dart';
 import 'package:weartherproject/services/auth.dart';
 import 'package:weartherproject/services/store.dart';
 import 'package:weartherproject/pages/home_page.dart';
@@ -225,6 +226,7 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                           decorationColor: Colors.grey),
                                     ),
                                     onTap: () {
+                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ForgotPassWord(),));
                                     },
                                   ),
                                 ],
