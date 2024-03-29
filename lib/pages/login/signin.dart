@@ -312,12 +312,21 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                 ElevatedButton(
                                   onPressed: () async {
                                     String? email = await signInWithGoogle();
+                                    print(email);
                                     QuerySnapshot? query = await _fireStore.getData("Account", "account", email);
                                     if(query?.docs.length == 0){
                                       _fireStore.addData({
                                         'account' : email,
                                         'password' : "",
                                       }, 'Account');
+                                      _fireStore.addData({
+                                        "address" : "",
+                                        "date" : DateTime.now(),
+                                        "email" : email,
+                                        "gender" : "",
+                                        "name" : "",
+                                        "phone_number" : ""
+                                      }, "User");
                                       Navigator.pushReplacement(
                                           context, MaterialPageRoute(
                                         builder: (context) => MyApp(email!),));

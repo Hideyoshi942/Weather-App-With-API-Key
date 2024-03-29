@@ -119,7 +119,6 @@ class _HomePageState extends State<HomePage> {
               GestureDetector(
                   onTap: () async {
                     QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
-                    print("-----------------++++++++");
                     idUser = query.docs.first.id;
                     setState(() {
                     });
@@ -163,9 +162,10 @@ class _HomePageState extends State<HomePage> {
                                           Text(item?["name"], style: TextStyle(fontSize: 20),),
                                           ElevatedButton(
                                               onPressed: (){
-                                                String? id = item?.id;
-                                                _firestore.deleteData("LoveCity", id!);
-                                              },
+                                                  String? id = item?.id;
+                                                  FirebaseFirestore.instance.collection('User').doc(idUser).collection("LoveCity").doc(id).delete();
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã xóa thành phố từ danh sách yêu thích")));
+                                                },
                                               child: Icon(
                                                 Icons.delete_forever,
                                                 color: Colors.red,
@@ -199,7 +199,6 @@ class _HomePageState extends State<HomePage> {
               GestureDetector(
                   onTap: () async {
                     QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
-                    print("-----------------++++++++");
                     idUser = query.docs.first.id;
                     setState(() {
                     });
@@ -243,9 +242,10 @@ class _HomePageState extends State<HomePage> {
                                           Text(item?["name"], style: TextStyle(fontSize: 20),),
                                           ElevatedButton(
                                               onPressed: (){
-                                                String? id = item?.id;
-                                                _firestore.deleteData("LoveCity", id!);
-                                              },
+                                                  String? id = item?.id;
+                                                  FirebaseFirestore.instance.collection('User').doc(idUser).collection("LoveCity").doc(id).delete();
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã xóa thành phố từ danh sách yêu thích")));
+                                                },
                                               child: Icon(
                                                 Icons.delete_forever,
                                                 color: Colors.red,
@@ -410,7 +410,6 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
                 onTap: () async {
                   QuerySnapshot query = await FirebaseFirestore.instance.collection("User").where("email", isEqualTo: widget._email).get();
-                  print("-----------------++++++++");
                   idUser = query.docs.first.id;
                   setState(() {
                   });
@@ -455,7 +454,8 @@ class _HomePageState extends State<HomePage> {
                                         ElevatedButton(
                                             onPressed: (){
                                               String? id = item?.id;
-                                              _firestore.deleteData("LoveCity", id!);
+                                              FirebaseFirestore.instance.collection('User').doc(idUser).collection("LoveCity").doc(id).delete();
+                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Đã xóa thành phố từ danh sách yêu thích")));
                                             },
                                             child: Icon(
                                               Icons.delete_forever,
